@@ -1,44 +1,41 @@
 // server.js
 const express = require("express");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
 const path = require("path");
 const app = express();
-const  Person  = require("./models/person");
 const router = require("./routes/route");
 const connectDB = require("./db");
 
 
 const PORT = 8000;
-// Middleware to parse JSON
+const logRequest = (req, res, next) => {
+  const now = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+  console.log(`[${now}] ${req.method} ${req.url}`);
+  next();
+};
+
+
 app.use(express.json());
 
+app.use(logRequest);
+
+
+// app.use(new LocalStrategy (async (useName , password  , done) => {
+//       try{
+
+//       }
+//       catch(err){
+//         res.status(500).json({msgg : err})
+//       }
+  
+// }))
+
+
+
 // Use routes
-app.use("/", router);
-
-// Start server
-
-// app.post("/person",
-//    async (req, res) => {
-//   try {
-//     const data = req.body; // get request body
-//     const newPerson = new Person(data);
-//     await connectDB();
-//     const savedPerson = await newPerson.save();
-//     // console.log("data" , data);
-//     res.status(201).json({
-//       success: true,
-//       message: "Person added successfully",
-//       data: data
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Error adding person",
-//       error: error.message
-//     });
-//   }
-// }
-// );
-
+app.use("/",router);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
